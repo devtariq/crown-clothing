@@ -1,58 +1,53 @@
-import { useState } from "react";
-
+import {useState} from 'react';
 import FormInput from '../form-input/form-input.component';
 import {
   createAuthUserWithEmailAndPassword,
-  createUserDocumentFromAuth
+  createUserDocumentFromAuth,
 } from '../../utils/firebase/firebase.utils';
 
-import Button from "../button/button.component";
+import Button from '../button/button.component';
 
-import './sign-up.style.scss'
+import './sign-up.style.scss';
 
 const defautFormFields = {
-	displayName: '',
-	email: '',
-	password: '',
-	confirmPassword: ''
-}
+  displayName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+};
 
 const SignUpForm = () => {
+  const [formFields, setFormFields] = useState(defautFormFields);
+  const {displayName, email, password, confirmPassword} = formFields;
 
-	const [formFields, setFormFields] = useState(defautFormFields);
-	const {displayName, email, password, confirmPassword} = formFields;
-
-	console.log(formFields);
-
-	const handleChange = (event) => {
-		const {name, value} = event.target;
-		setFormFields({...formFields, [name]: value});
-	}
+  const handleChange = (event) => {
+    const {name, value} = event.target;
+    setFormFields({...formFields, [name]: value});
+  };
 
   const resetFormFields = () => {
     setFormFields(defautFormFields);
-  }
-  const handleSubmit = async(event) => {
+  };
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if(password !== confirmPassword) {
+    if (password !== confirmPassword) {
       alert('PassWord do not Match');
       return;
     }
-    try{
-      const {user} = await createAuthUserWithEmailAndPassword(email,password);
+    try {
+      const {user} = await createAuthUserWithEmailAndPassword(email, password);
       await createUserDocumentFromAuth(user, {displayName});
       resetFormFields();
-    }catch(error){
-      if(error.code === 'auth/email-already-in-use'){
+    } catch (error) {
+      if (error.code === 'auth/email-already-in-use') {
         alert('User Creation failed. Email Already In Use');
-      }else{
-         console.log('User Creation facing an Error', error);
+      } else {
+        console.log('User Creation facing an Error', error);
       }
     }
-  }
+  };
 
-
-	return (
+  return (
     <div className='sign-up-container'>
       <h2>Don't have an Account?</h2>
       <span>Sign Up with your Email and Password</span>
@@ -89,12 +84,12 @@ const SignUpForm = () => {
           value={confirmPassword}
           required
         />
-        <Button button_type="default" type='submit'>
+        <Button button_type='default' type='submit'>
           Sign Up
         </Button>
       </form>
     </div>
   );
-}
+};
 
 export default SignUpForm;
